@@ -1,0 +1,20 @@
+version: 1
+script:
+  - rm -rf AppDir || true
+  - mkdir -p AppDir/usr/bin AppDir/usr/share/applications AppDir/usr/share/icons/hicolor/scalable/apps
+  - cp -a dist/LongBookMerger/* AppDir/usr/bin/
+  - cp LongBookMerger.desktop AppDir/usr/share/applications/LongBookMerger.desktop
+  - cp assets/icon.svg AppDir/usr/share/icons/hicolor/scalable/apps/LongBookMerger.svg
+  - cp AppRun AppDir/AppRun
+  - chmod +x AppDir/AppRun AppDir/usr/bin/LongBookMerger
+AppDir:
+  path: ./AppDir
+  app_info:
+    id: LongBookMerger
+    name: LongBookMerger
+    icon: LongBookMerger
+    version: 1.0.0
+    exec: usr/bin/LongBookMerger
+    exec_args: $@
+AppImage:
+  arch: x86_64

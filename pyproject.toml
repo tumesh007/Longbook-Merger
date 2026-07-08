@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=70", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "LongBookMerger"
+version = "1.0.0"
+description = "Ubuntu desktop application for merging CBSL/Finacle Long Book reports into A4 landscape PDFs."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "LongBookMerger" }]
+dependencies = [
+  "PySide6>=6.7,<7",
+  "reportlab>=4.2,<5",
+  "PyPDF2>=3.0,<4",
+  "beautifulsoup4>=4.12,<5",
+  "lxml>=5.2,<7",
+  "Pillow>=10.4,<12",
+  "appdirs>=1.4,<2"
+]
+
+[project.scripts]
+longbookmerger = "main:main"
+
+[tool.setuptools]
+py-modules = [
+  "main",
+  "gui",
+  "parser",
+  "pdf_generator",
+  "html_detector",
+  "sorter",
+  "bookmarks",
+  "index_page",
+  "settings",
+  "utils"
+]
+package-dir = { "" = "src" }
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+

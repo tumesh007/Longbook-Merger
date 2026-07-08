@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=LongBookMerger
+Comment=Merge CBSL/Finacle Long Book reports into formatted PDFs
+Exec=LongBookMerger
+Icon=LongBookMerger
+Terminal=false
+Categories=Office;Finance;
+MimeType=application/zip;text/plain;text/html;
+
