@@ -1,10 +1,9 @@
 [Desktop Entry]
+Name=LongBookMerger v1.1
+Comment=Merge PNB Long Book reports into PDF
+Exec=/bin/bash -c "cd \"%c\" && ./run.sh"
 Type=Application
-Name=LongBookMerger
-Comment=Merge CBSL/Finacle Long Book reports into formatted PDFs
-Exec=LongBookMerger
-Icon=LongBookMerger
 Terminal=false
+Icon=application-pdf
 Categories=Office;Finance;
-MimeType=application/zip;text/plain;text/html;
-
+Path=

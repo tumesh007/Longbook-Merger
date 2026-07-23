@@ -1,10 +1,16 @@
-PySide6>=6.7,<7
-reportlab>=4.2,<5
-PyPDF2>=3.0,<4
-beautifulsoup4>=4.12,<5
-lxml>=5.2,<7
-Pillow>=10.4,<12
-appdirs>=1.4,<2
-pyinstaller>=6.9,<7
-appimage-builder>=1.1,<2
+# LongBookMerger v1.1 Dependencies
+# Install with: pip install -r requirements.txt
 
+# Qt GUI framework
+PySide6>=6.4.0
+
+# PDF generation
+reportlab>=3.6.0
+PyPDF2>=3.0.0
+
+# HTML parsing
+beautifulsoup4>=4.11.0
+lxml>=4.9.0
+
+# Application directories (cross-platform)
+appdirs>=1.4.4
