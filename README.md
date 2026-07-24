@@ -2,7 +2,7 @@
 
 **Merge fixed-width PNB CBSL/Finacle Long Book `.rpt` files into A4 landscape PDFs.**
 
-> **Author:** Tumesh (Senior Branch Manager, PNB Gaga Branch, Sangrur)  
+> **Author:** Tumesh 
 > **GitHub:** https://github.com/tumesh007/Longbook-Merger  
 > **Version:** 1.1
 
