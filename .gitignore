@@ -53,3 +53,8 @@ Thumbs.db
 # Environment
 .env
 .env.local
+
+# Packaging outputs
+packaging/*.AppImage
+packaging/*.exe
+packaging/*.dmg

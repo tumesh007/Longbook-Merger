@@ -30,9 +30,10 @@ Designed for banking professionals who regularly export and print long books fro
 
 ### Installation
 
-#### Linux
+#### Linux / macOS
 ```bash
-# Clone or download repository
+# Clone repository
+git clone https://github.com/tumesh007/Longbook-Merger.git
 cd Longbook-Merger
 
 # Run setup
@@ -47,13 +48,6 @@ bash scripts/run.sh
 cd Longbook-Merger
 scripts\setup.bat
 scripts\run.bat
-```
-
-#### macOS
-```bash
-cd Longbook-Merger
-bash scripts/setup.sh
-bash scripts/run.sh
 ```
 
 ### Usage
@@ -80,12 +74,7 @@ bash scripts/run.sh
 bash scripts/build_appimage.sh
 ```
 
-### Executable (Linux)
-```bash
-bash scripts/build_linux.sh
-```
-
-### Executable (Windows)
+### Windows Executable
 ```batch
 scripts\build_windows.bat
 ```
@@ -94,77 +83,57 @@ scripts\build_windows.bat
 
 ```
 Longbook-Merger/
-├── src/                    # Source code
-│   ├── main.py            # Entry point
-│   ├── gui.py             # GUI components
-│   ├── parser.py          # File parsing
-│   ├── pdf_generator.py   # PDF creation
-│   ├── utils.py           # Utilities
-│   └── ...
-├── config/                # Configuration files
-├── scripts/               # Build/run scripts
-├── docs/                  # Documentation
-├── requirements.txt       # Dependencies
-└── README.md              # This file
+├── src/longbook_merger/       # Main package
+│   ├── __init__.py
+│   ├── main.py                # Entry point
+│   ├── gui.py                 # PyQt5 GUI
+│   ├── parser.py              # Format parsers
+│   ├── pdf_generator.py       # PDF generation
+│   ├── bookmarks.py           # TOC/bookmarks
+│   ├── html_detector.py       # HTML format detection
+│   ├── index_page.py          # Index page generation
+│   ├── parser.py              # Core parsing logic
+│   ├── pdf_generator.py       # PDF output
+│   ├── settings.py            # Settings management
+│   ├── sorter.py              # Page sorting
+│   └── utils.py               # Utilities
+├── config/                    # Configuration files
+├── docs/                      # Documentation
+├── packaging/                 # Build artifacts & configs
+│   ├── AppRun                 # AppImage entry point
+│   ├── AppImageBuilder.yml    # AppImage config
+│   ├── appimage_builder.yml   # AppImage config (alt)
+│   ├── LongBookMerger.desktop # Desktop entry
+│   └── LongBookMerger-v1.1.spec # PyInstaller spec
+├── scripts/                   # Build/deploy scripts
+│   ├── setup.sh / .bat        # Dependency install
+│   ├── run.sh / .bat          # Run application
+│   ├── build_appimage.sh      # Build AppImage
+│   ├── build_linux.sh         # Build Linux binary
+│   └── setup.sh / .bat        # Environment setup
+├── config/                    # Config files
+├── docs/                      # Documentation
+├── README.md
+├── LICENSE
+├── requirements.txt
+├── pyproject.toml
+├── .gitignore
+└── run.sh                     # Quick run script
 ```
 
-## Dependencies
+## Development
 
-Core libraries:
-- **PyQt5** - GUI framework
-- **ReportLab** - PDF generation
-- **pandas** - Data processing
-- **Pillow** - Image handling
-
-See `requirements.txt` for complete list.
-
-## Configuration
-
-Edit `src/settings.py` to customize:
-- Default output directory
-- PDF page margins
-- Font settings
-- Color schemes
-- Processing options
-
-## Troubleshooting
-
-### GUI doesn't start
 ```bash
-# Check PyQt5 installation
-python3 -c "import PyQt5; print(PyQt5.__version__)"
+# Install dev dependencies
+pip install -r requirements.txt
 
-# Reinstall if needed
-pip install --upgrade PyQt5
+# Run tests
+pytest tests/
+
+# Run directly
+python -m src.longbook_merger
 ```
-
-### PDF generation fails
-- Verify input files are valid CBSL/Finacle exports
-- Check output directory permissions
-- Ensure sufficient disk space
-- Try with a smaller file first
-
-### Performance issues
-- Close other applications
-- Use SSD for temporary files
-- Reduce number of files per batch
 
 ## License
 
-MIT License - See LICENSE file
-
-## Author
-
-**Tumesh007** - [GitHub](https://github.com/tumesh007)
-
-## Support & Issues
-
-- 📖 [Documentation](docs/)
-- 🐛 [Report Issues](https://github.com/tumesh007/Longbook-Merger/issues)
-- 💬 [GitHub Discussions](https://github.com/tumesh007/Longbook-Merger/discussions)
-
----
-
-**Latest Version**: 1.1.0  
-**Last Updated**: July 2026  
-**Status**: Active Development
+MIT License - see [LICENSE](LICENSE) for details.

@@ -1,25 +1,29 @@
 #!/bin/bash
-# Run LongBook Merger application
+# LongBookMerger v1.1 — Auto launcher with virtual environment
+# Run: ./run.sh
 
 set -e
 
-cd "$(dirname "$0")/.."
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 
-# Check Python version
-PYTHON_VERSION=$(python3 --version | cut -d' ' -f2 | cut -d'.' -f1,2)
-echo "Python version: $PYTHON_VERSION"
-
-if (( $(echo "$PYTHON_VERSION < 3.8" | bc -l) )); then
-    echo "Error: Python 3.8+ required"
-    exit 1
+# Create venv if missing
+if [ ! -d "venv" ]; then
+    echo "[LongBookMerger] Creating virtual environment..."
+    python3 -m venv venv
 fi
 
-# Install dependencies if needed
-if ! python3 -c "import PyQt5" 2>/dev/null; then
-    echo "Installing dependencies..."
+# Activate venv
+source venv/bin/activate
+
+# Install/update dependencies if needed
+if [ ! -f "venv/.deps-installed" ] || [ "requirements.txt" -nt "venv/.deps-installed" ]; then
+    echo "[LongBookMerger] Installing dependencies..."
+    pip install --upgrade pip
     pip install -r requirements.txt
+    touch venv/.deps-installed
 fi
 
-# Run application
-echo "Launching LongBook Merger..."
-python3 src/main.py
+# Launch app
+echo "[LongBookMerger] Starting LongBookMerger v1.1..."
+python main.py
