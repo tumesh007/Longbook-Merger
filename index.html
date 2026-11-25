@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LongBook Merger — A4 Landscape Print-Ready Banking PDF Generator</title>
-  <meta name="description" content="In-browser merger for CBSL & Finacle Long Book reports. Auto-formats 132/160-column ASCII tables to A4 Landscape without wrapping." />
+  <meta name="description" content="In-browser merger for CBSL &amp; Finacle Long Book reports. Auto-formats 132/160-column ASCII tables to A4 Landscape without wrapping." />
 
   <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -20,69 +20,79 @@
 <body class="bg-slate-100 text-slate-800 flex flex-col h-screen overflow-hidden">
 
   <!-- Top Navigation Header -->
-  <header class="bg-slate-900 text-white px-5 py-3 flex items-center justify-between border-b border-slate-800 shadow-md flex-shrink-0">
+  <header class="header-gradient text-white px-5 py-3 flex items-center justify-between flex-shrink-0">
     <div class="flex items-center space-x-3">
-      <div class="w-9 h-9 bg-indigo-600 rounded-lg flex items-center justify-center text-white shadow-sm font-bold text-lg">
+      <div class="icon-glow w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-500/40">
         <i data-lucide="book-open-check" class="w-5 h-5"></i>
       </div>
       <div>
-        <h1 class="text-base font-semibold leading-tight flex items-center gap-2">
-          LongBook Merger Studio
+        <h1 class="text-base font-bold leading-tight flex items-center gap-2">
+          <span class="title-gradient">LongBook Merger Studio</span>
           <span class="text-xs font-normal bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
             A4 Landscape Print-Ready
           </span>
         </h1>
-        <p class="text-xs text-slate-400">Merge Finacle & CBSL reports into perfectly scaled A4 Landscape PDFs without "2 papers per sheet" wrapping</p>
+        <p class="text-xs text-slate-400">Merge Finacle &amp; CBSL reports into perfectly scaled A4 Landscape PDFs without "2 papers per sheet" wrapping</p>
       </div>
     </div>
 
     <!-- Quick Actions -->
     <div class="flex items-center space-x-3">
-      <label for="file-input" class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3.5 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+      <label for="file-input" class="cursor-pointer bg-white/10 hover:bg-white/20 text-slate-200 border border-white/20 px-3.5 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-all duration-200 hover:scale-105 backdrop-blur-sm">
         <i data-lucide="plus" class="w-4 h-4"></i>
         <span>Add Reports</span>
       </label>
       <input type="file" id="file-input" multiple accept=".txt,.prn,.csv,.htm,.html,.rpt" class="hidden" />
 
-      <button id="btn-merge-download" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-4 py-1.5 rounded-lg text-sm flex items-center gap-2 shadow-sm transition-colors">
+      <button id="btn-merge-download" class="btn-merge text-white font-semibold px-4 py-1.5 rounded-lg text-sm flex items-center gap-2 shadow-lg shadow-indigo-500/30 transition-all duration-200 hover:scale-105">
         <i data-lucide="file-down" class="w-4 h-4"></i>
-        <span>Merge & Download PDF</span>
+        <span>Merge &amp; Download PDF</span>
       </button>
     </div>
   </header>
 
   <!-- Empty State (No Reports Added) -->
-  <main id="empty-state" class="flex-1 flex flex-col items-center justify-center p-6 text-center">
-    <div id="drop-zone" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-white rounded-2xl p-12 max-w-xl w-full shadow-sm transition-all duration-200 cursor-pointer flex flex-col items-center" onclick="document.getElementById('file-input').click()">
-      <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4">
-        <i data-lucide="files" class="w-8 h-8"></i>
-      </div>
-      <h3 class="text-lg font-semibold text-slate-900 mb-1">Drag & Drop Long Book Reports Here</h3>
-      <p class="text-sm text-slate-500 mb-5">Supports CBSL CSV, Finacle HTML (.htm/.html), and TXT/PRN/RPT files</p>
+  <main id="empty-state" class="flex-1 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-100 to-slate-200">
+    <div id="drop-zone" class="drop-zone-animated border-2 border-dashed border-slate-300 hover:border-indigo-400 bg-white rounded-2xl pt-14 pb-10 px-12 max-w-2xl w-full cursor-pointer flex flex-col items-center transition-all duration-300" onclick="document.getElementById('file-input').click()">
 
-      <div class="inline-flex items-center gap-2 text-xs text-slate-400 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-full">
-        <i data-lucide="check-circle" class="w-3.5 h-3.5 text-indigo-600"></i>
+      <!-- 3D Icon Tile -->
+      <div class="icon-tile w-20 h-20 rounded-2xl flex items-center justify-center mb-5">
+        <i data-lucide="files" class="w-9 h-9 text-indigo-600"></i>
+      </div>
+
+      <h3 class="text-xl font-bold text-slate-900 mb-2">Drag &amp; Drop Long Book Reports Here</h3>
+      <p class="text-sm text-slate-500 mb-6">Supports CBSL CSV, Finacle HTML (.htm/.html), and TXT/PRN/RPT files</p>
+
+      <div class="inline-flex items-center gap-2 text-xs text-slate-500 bg-slate-50 border border-slate-200 px-4 py-2 rounded-full shadow-sm">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500"></i>
         <span>100% Client-Side. No report data is uploaded to external servers.</span>
       </div>
 
+      <!-- Animated dots row -->
+      <div class="flex gap-1.5 mt-6 mb-2">
+        <span class="dot-bounce w-1.5 h-1.5 rounded-full bg-indigo-300" style="animation-delay:0s"></span>
+        <span class="dot-bounce w-1.5 h-1.5 rounded-full bg-purple-300" style="animation-delay:0.2s"></span>
+        <span class="dot-bounce w-1.5 h-1.5 rounded-full bg-indigo-300" style="animation-delay:0.4s"></span>
+      </div>
+
       <!-- Feature highlights -->
-      <div class="grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-slate-100 text-left w-full">
-        <div class="space-y-1">
-          <p class="text-xs font-semibold text-slate-700 flex items-center gap-1">
+      <div class="grid grid-cols-3 gap-4 mt-5 pt-6 border-t border-slate-100 text-left w-full">
+        <div class="feature-card border-l-4 border-indigo-500 bg-indigo-50/70 rounded-r-xl p-3 space-y-1 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-default">
+          <p class="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
             <i data-lucide="maximize" class="w-3.5 h-3.5 text-indigo-600"></i> Auto Font Scaling
           </p>
           <p class="text-[11px] text-slate-500 leading-snug">Calculates Courier size so 132/160 columns fit without wrapping</p>
         </div>
-        <div class="space-y-1">
-          <p class="text-xs font-semibold text-slate-700 flex items-center gap-1">
-            <i data-lucide="minimize" class="w-3.5 h-3.5 text-indigo-600"></i> Compact Mode
+        <div class="feature-card border-l-4 border-purple-500 bg-purple-50/70 rounded-r-xl p-3 space-y-1 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-default">
+          <p class="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+            <i data-lucide="minimize" class="w-3.5 h-3.5 text-purple-600"></i> Compact Mode
           </p>
           <p class="text-[11px] text-slate-500 leading-snug">Excludes wasteful cover pages and blank trailing sheets</p>
         </div>
-        <div class="space-y-1">
-          <p class="text-xs font-semibold text-slate-700 flex items-center gap-1">
-            <i data-lucide="list-ordered" class="w-3.5 h-3.5 text-indigo-600"></i> Table of Contents
+        <div class="feature-card border-l-4 border-teal-500 bg-teal-50/70 rounded-r-xl p-3 space-y-1 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-default">
+          <p class="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+            <i data-lucide="list-ordered" class="w-3.5 h-3.5 text-teal-600"></i> Table of Contents
           </p>
           <p class="text-[11px] text-slate-500 leading-snug">Generates an indexed summary page with dates and page ranges</p>
         </div>
@@ -101,71 +111,86 @@
         <div class="flex items-center justify-between">
           <div>
             <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Report Queue</h2>
-            <p id="file-count-badge" class="text-xs font-medium text-slate-700">0 reports loaded</p>
+            <p id="file-count-badge" class="text-xs font-semibold text-indigo-600 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1 mt-1">
+              0 reports loaded
+            </p>
           </div>
-          <div class="flex items-center gap-1">
-            <button id="btn-sort-dates" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-2 py-1 rounded-md border border-slate-200 transition-colors flex items-center gap-1" title="Sort by report date">
+          <div class="flex items-center gap-1.5">
+            <button id="btn-sort-dates" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1.5 rounded-lg border border-indigo-700 transition-all duration-150 flex items-center gap-1 shadow-sm font-medium" title="Sort by report date">
               <i data-lucide="arrow-down-up" class="w-3 h-3"></i>
               <span>Sort Date</span>
             </button>
-            <button id="btn-clear-all" class="text-xs bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1 rounded-md border border-red-200 transition-colors" title="Clear all">
+            <button id="btn-clear-all" class="text-xs bg-red-50 hover:bg-red-600 text-red-600 hover:text-white px-2.5 py-1.5 rounded-lg border border-red-200 hover:border-red-600 transition-all duration-150 font-medium flex items-center gap-1" title="Clear all">
+              <i data-lucide="trash-2" class="w-3 h-3"></i>
               Clear
             </button>
           </div>
         </div>
 
-        <!-- File List -->
-        <div id="file-queue-list" class="space-y-2 max-h-72 overflow-y-auto pr-1">
-          <!-- Dynamically populated -->
-        </div>
-
-        <!-- Print & Output Presets -->
-        <div class="pt-4 border-t border-slate-100 space-y-3">
-          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Print Optimization</label>
-          
-          <div class="space-y-2 text-xs text-slate-700">
-            <label class="flex items-start gap-2 cursor-pointer">
-              <input type="checkbox" id="chk-compact-mode" checked class="rounded text-indigo-600 focus:ring-0 mt-0.5" />
-              <div>
-                <span class="font-medium text-slate-800">Compact Mode (Recommended)</span>
-                <p class="text-[11px] text-slate-500">Skips cover/parameter pages to prevent paper waste</p>
-              </div>
-            </label>
-
-            <label class="flex items-start gap-2 cursor-pointer">
-              <input type="checkbox" id="chk-blank-pages" checked class="rounded text-indigo-600 focus:ring-0 mt-0.5" />
-              <div>
-                <span class="font-medium text-slate-800">Strip Empty Pages</span>
-                <p class="text-[11px] text-slate-500">Omits blank form-feed trailing pages</p>
-              </div>
-            </label>
-
-            <label class="flex items-start gap-2 cursor-pointer">
-              <input type="checkbox" id="chk-generate-index" checked class="rounded text-indigo-600 focus:ring-0 mt-0.5" />
-              <div>
-                <span class="font-medium text-slate-800">Generate Index Sheet</span>
-                <p class="text-[11px] text-slate-500">Prepends a table of contents with dates and page ranges</p>
-              </div>
-            </label>
+        <!-- Queue scroll-top gradient hint -->
+        <div class="relative">
+          <div class="queue-scroll-hint absolute top-0 left-0 right-0 h-5 z-10 pointer-events-none rounded-t-lg"></div>
+          <!-- File List -->
+          <div id="file-queue-list" class="space-y-2 max-h-72 overflow-y-auto pr-1 pt-1">
+            <!-- Dynamically populated -->
           </div>
         </div>
 
+        <!-- Print & Output Presets -->
+        <div class="pt-4 border-t border-slate-100 space-y-2">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Print Optimization</label>
+
+          <label class="checkbox-card flex items-start gap-3 cursor-pointer p-3 rounded-xl border border-slate-100 hover:border-indigo-200 hover:bg-indigo-50/40 transition-all duration-150 group">
+            <input type="checkbox" id="chk-compact-mode" checked class="rounded text-indigo-600 focus:ring-0 mt-0.5 accent-indigo-600" />
+            <div class="flex items-start gap-2">
+              <span class="text-base mt-0.5 leading-none">🗜️</span>
+              <div>
+                <span class="text-xs font-semibold text-slate-800 group-hover:text-indigo-700 transition-colors">Compact Mode <span class="text-[10px] font-normal text-slate-400">(Recommended)</span></span>
+                <p class="text-[11px] text-slate-500 leading-snug mt-0.5">Skips cover/parameter pages to prevent paper waste</p>
+              </div>
+            </div>
+          </label>
+
+          <label class="checkbox-card flex items-start gap-3 cursor-pointer p-3 rounded-xl border border-slate-100 hover:border-rose-200 hover:bg-rose-50/40 transition-all duration-150 group">
+            <input type="checkbox" id="chk-blank-pages" checked class="rounded text-indigo-600 focus:ring-0 mt-0.5 accent-indigo-600" />
+            <div class="flex items-start gap-2">
+              <span class="text-base mt-0.5 leading-none">🗑️</span>
+              <div>
+                <span class="text-xs font-semibold text-slate-800 group-hover:text-rose-700 transition-colors">Strip Empty Pages</span>
+                <p class="text-[11px] text-slate-500 leading-snug mt-0.5">Omits blank form-feed trailing pages</p>
+              </div>
+            </div>
+          </label>
+
+          <label class="checkbox-card flex items-start gap-3 cursor-pointer p-3 rounded-xl border border-slate-100 hover:border-teal-200 hover:bg-teal-50/40 transition-all duration-150 group">
+            <input type="checkbox" id="chk-generate-index" checked class="rounded text-indigo-600 focus:ring-0 mt-0.5 accent-indigo-600" />
+            <div class="flex items-start gap-2">
+              <span class="text-base mt-0.5 leading-none">📑</span>
+              <div>
+                <span class="text-xs font-semibold text-slate-800 group-hover:text-teal-700 transition-colors">Generate Index Sheet</span>
+                <p class="text-[11px] text-slate-500 leading-snug mt-0.5">Prepends a table of contents with dates and page ranges</p>
+              </div>
+            </div>
+          </label>
+        </div>
+
         <!-- Technical Specification Note -->
-        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-600 space-y-1">
-          <p class="font-semibold text-slate-800 flex items-center gap-1">
-            <i data-lucide="check" class="w-3.5 h-3.5 text-indigo-600"></i> A4 Margins Enforced:
+        <div class="tech-spec-card p-4 rounded-xl text-[11px] space-y-1.5">
+          <p class="font-bold text-indigo-100 flex items-center gap-1.5 mb-2">
+            <i data-lucide="ruler" class="w-3.5 h-3.5 text-indigo-300"></i>
+            A4 Margins Enforced
           </p>
-          <p>• Left / Right: 8.0 mm (fits binder punches)</p>
-          <p>• Top / Bottom: 5.0 mm (maximizes usable height)</p>
-          <p>• Courier Monospaced font scaling with 1.05x leading</p>
+          <p class="text-indigo-200/80">• Left / Right: <span class="text-white font-medium">8.0 mm</span> (fits binder punches)</p>
+          <p class="text-indigo-200/80">• Top / Bottom: <span class="text-white font-medium">5.0 mm</span> (maximizes usable height)</p>
+          <p class="text-indigo-200/80">• Courier Monospaced font with <span class="text-white font-medium">1.05× leading</span></p>
         </div>
 
       </div>
 
       <!-- Add more button at bottom -->
       <div class="p-4 bg-slate-50 border-t border-slate-200">
-        <button onclick="document.getElementById('file-input').click()" class="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium py-2 rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-sm">
-          <i data-lucide="folder-plus" class="w-4 h-4 text-indigo-400"></i>
+        <button onclick="document.getElementById('file-input').click()" class="btn-add-more w-full text-white text-xs font-semibold py-2.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:scale-105 active:scale-95">
+          <i data-lucide="folder-plus" class="w-4 h-4"></i>
           <span>Add More Reports</span>
         </button>
       </div>
@@ -175,38 +200,43 @@
     <section class="flex-1 flex flex-col bg-slate-200 overflow-hidden">
 
       <!-- Viewport Toolbar -->
-      <div class="bg-white border-b border-slate-200 px-4 py-2 flex items-center justify-between text-xs text-slate-600 flex-shrink-0">
+      <div class="toolbar-gradient border-b border-slate-200 px-4 py-2.5 flex items-center justify-between text-xs text-slate-600 flex-shrink-0 shadow-sm">
         <!-- Pagination -->
-        <div class="flex items-center space-x-2">
-          <button id="btn-prev-page" class="p-1 rounded hover:bg-slate-100 text-slate-600 disabled:opacity-40">
+        <div class="flex items-center space-x-1">
+          <button id="btn-prev-page" class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-600 disabled:opacity-40 transition-colors">
             <i data-lucide="chevron-left" class="w-4 h-4"></i>
           </button>
-          <span id="preview-page-info" class="font-medium">Page 1 of 1</span>
-          <button id="btn-next-page" class="p-1 rounded hover:bg-slate-100 text-slate-600 disabled:opacity-40">
+          <span id="preview-page-info" class="font-semibold bg-slate-100 border border-slate-200 text-slate-700 px-3 py-1 rounded-full text-xs">Page 1 of 1</span>
+          <button id="btn-next-page" class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-600 disabled:opacity-40 transition-colors">
             <i data-lucide="chevron-right" class="w-4 h-4"></i>
           </button>
         </div>
 
         <!-- Report Title / Stats -->
         <div class="truncate max-w-md">
-          <span id="preview-header" class="font-medium text-slate-700 truncate">Preview</span>
+          <span id="preview-header" class="font-semibold text-slate-700 truncate"></span>
         </div>
 
         <!-- Zoom Controls -->
-        <div class="flex items-center space-x-2">
-          <button id="btn-zoom-out" class="p-1 rounded hover:bg-slate-100 text-slate-600">
+        <div class="flex items-center space-x-1 bg-slate-100 border border-slate-200 rounded-lg px-1 py-0.5">
+          <button id="btn-zoom-out" class="p-1 rounded hover:bg-white text-slate-600 transition-colors">
             <i data-lucide="zoom-out" class="w-4 h-4"></i>
           </button>
-          <span id="zoom-level" class="font-medium text-slate-700 w-12 text-center">100%</span>
-          <button id="btn-zoom-in" class="p-1 rounded hover:bg-slate-100 text-slate-600">
+          <span id="zoom-level" class="font-semibold text-slate-700 w-12 text-center text-xs">100%</span>
+          <button id="btn-zoom-in" class="p-1 rounded hover:bg-white text-slate-600 transition-colors">
             <i data-lucide="zoom-in" class="w-4 h-4"></i>
           </button>
         </div>
       </div>
 
       <!-- Preview Sheet Area -->
-      <div class="flex-1 overflow-auto p-8 flex items-center justify-center">
-        <div class="a4-landscape-sheet rounded-lg border border-slate-300 overflow-hidden relative w-[840px] max-w-full">
+      <div class="flex-1 overflow-auto p-10 flex items-center justify-center preview-bg">
+        <div class="a4-landscape-sheet rounded-lg overflow-hidden relative w-[840px] max-w-full">
+          <!-- Print margin header strip -->
+          <div class="ascii-margin-header px-5 py-1.5 flex items-center justify-between text-[9px] text-slate-400 font-mono border-b border-slate-100 select-none">
+            <span>LongBook Merger — Print Preview</span>
+            <span class="flex items-center gap-1"><i data-lucide="printer" class="w-2.5 h-2.5"></i> A4 Landscape · 297×210 mm</span>
+          </div>
           <!-- Monospaced content area -->
           <pre id="preview-sheet" class="ascii-view p-5 text-slate-800 h-full overflow-auto bg-white select-text leading-tight"></pre>
         </div>
@@ -217,7 +247,7 @@
   </main>
 
   <!-- Toast Notification -->
-  <div id="toast" class="hidden fixed bottom-5 right-5 z-50 flex items-center gap-2 text-white text-xs font-medium px-4 py-2.5 rounded-lg shadow-xl opacity-0 transform translate-y-4">
+  <div id="toast" class="hidden fixed bottom-5 right-5 z-50 flex items-center gap-2 text-white text-xs font-medium px-4 py-2.5 rounded-xl shadow-2xl opacity-0 transform translate-y-4">
     <i data-lucide="info" class="w-4 h-4"></i>
     <span id="toast-msg">Notification message</span>
   </div>
