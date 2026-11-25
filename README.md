@@ -3,6 +3,19 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Python](https://img.shields.io/badge/python-3.8+-blue)
 ![Status](https://img.shields.io/badge/status-Active-green)
+[![Live WebApp](https://img.shields.io/badge/Live_WebApp-Open_Online-brightgreen?logo=github)](https://tumesh007.github.io/Longbook-Merger/)
+
+## 🌐 Live Web Application (Zero Install)
+
+Use the web version directly in your browser with **zero installation** and **100% offline privacy** (all processing runs locally in your browser sandbox, no data is ever uploaded):
+
+👉 **[https://tumesh007.github.io/Longbook-Merger/](https://tumesh007.github.io/Longbook-Merger/)**
+
+- **A4 Landscape Print-Ready:** Automatically scales Courier monospaced font so 132/160 columns fit without line wrapping.
+- **Eliminates "2 Papers Per Sheet":** Strict 8mm / 5mm margins and tight 1.05x leading ensure full pages fit onto single sheets.
+- **Compact Mode:** Detects and skips empty cover/parameter pages.
+- **Table of Contents:** Auto-generates an index sheet with file names, report dates, and page ranges.
+- **Format Support:** Ingests CBSL CSV, Finacle HTML (`.html`/`.htm`), TXT, PRN, and RPT files.
 
 ## Overview
 

@@ -1,0 +1,56 @@
+/* Longbook Merger Web Styles */
+
+:root {
+  --primary: #0f172a;
+  --accent: #2563eb;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  user-select: none;
+}
+
+/* Monospaced ASCII Preview Box */
+.ascii-view {
+  font-family: "Courier Prime", "Courier New", Courier, monospace;
+  font-size: 11px;
+  line-height: 1.15;
+  white-space: pre;
+  tab-size: 8;
+  letter-spacing: -0.2px;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Reorder draggable item styles */
+.file-card.dragging {
+  opacity: 0.5;
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+/* Toast */
+#toast {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Landscape A4 preview sheet */
+.a4-landscape-sheet {
+  aspect-ratio: 297 / 210;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  background: white;
+}
