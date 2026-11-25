@@ -139,24 +139,74 @@ class LongbookMergerApp {
   }
 
   async loadFiles(fileList) {
-    this.showToast(`Loading ${fileList.length} file(s)...`);
+    this.showToast(`Loading reports...`);
+    let addedCount = 0;
 
     for (const file of fileList) {
       try {
-        const text = await this.readFileAsText(file);
-        const parsed = this.parseReport(text, file.name);
-        this.files.push(parsed);
+        const isZip =
+          file.name.toLowerCase().endsWith(".zip") ||
+          file.type === "application/zip" ||
+          file.type === "application/x-zip-compressed";
+
+        if (isZip) {
+          if (typeof JSZip === "undefined") {
+            throw new Error("JSZip library is not loaded.");
+          }
+          const zip = await JSZip.loadAsync(file);
+          const entries = [];
+          zip.forEach((relativePath, zipEntry) => {
+            if (
+              !zipEntry.dir &&
+              !relativePath.startsWith("__MACOSX/") &&
+              !relativePath.includes("/.DS_Store") &&
+              !zipEntry.name.startsWith(".")
+            ) {
+              const lower = zipEntry.name.toLowerCase();
+              if (
+                lower.endsWith(".html") ||
+                lower.endsWith(".htm") ||
+                lower.endsWith(".txt") ||
+                lower.endsWith(".prn") ||
+                lower.endsWith(".rpt") ||
+                lower.endsWith(".csv")
+              ) {
+                entries.push(zipEntry);
+              }
+            }
+          });
+
+          // Sort entries by name initially
+          entries.sort((a, b) =>
+            a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })
+          );
+
+          for (const entry of entries) {
+            const text = await entry.async("string");
+            const cleanName = entry.name.split("/").pop();
+            const parsed = this.parseReport(text, cleanName);
+            this.files.push(parsed);
+            addedCount++;
+          }
+        } else {
+          const text = await this.readFileAsText(file);
+          const parsed = this.parseReport(text, file.name);
+          this.files.push(parsed);
+          addedCount++;
+        }
       } catch (err) {
         console.error("Failed to parse file", file.name, err);
+        this.showToast(`Error reading ${file.name}: ${err.message}`, true);
       }
     }
 
     if (this.files.length > 0) {
       if (this.emptyState) this.emptyState.classList.add("hidden");
       if (this.workspace) this.workspace.classList.remove("hidden");
+      this.sortByDate(true);
       this.renderQueue();
       this.selectFile(0);
-      this.showToast(`Successfully added ${fileList.length} report(s).`);
+      this.showToast(`Successfully added ${addedCount} report(s).`);
     }
   }
 
@@ -193,10 +243,12 @@ class LongbookMergerApp {
         .replace(/<br\s*\/?>/gi, "\n")
         .replace(/<[^>]+>/g, ""); // Strip other tags
 
-      // Decode entities
-      const txtElem = document.createElement("textarea");
-      txtElem.innerHTML = cleanText;
-      cleanText = txtElem.value;
+      // Decode entities if running in browser
+      if (typeof document !== "undefined") {
+        const txtElem = document.createElement("textarea");
+        txtElem.innerHTML = cleanText;
+        cleanText = txtElem.value;
+      }
     }
 
     // Expand tabs to 8 spaces (standard monospaced banking report format)
@@ -210,9 +262,16 @@ class LongbookMergerApp {
       rawPages = cleanText.split(/(?=\s*PUNJAB NATIONAL BANK|\s*Page:\s*\d+)/);
     }
 
+    // Sniff report date
+    let reportDate = "";
+    // 1. Try filename first (e.g. longbook_080100_01-11-2026.html or 23-10-2026.txt)
+    const fileDateMatch = fileName.match(/\b(\d{2}[-/]\d{2}[-/]\d{4})\b/);
+    if (fileDateMatch) {
+      reportDate = fileDateMatch[1].replace(/\//g, "-");
+    }
+
     // Process each page
     const pages = [];
-    let reportDate = "";
     let maxCols = 80;
 
     for (let i = 0; i < rawPages.length; i++) {
@@ -230,12 +289,17 @@ class LongbookMergerApp {
         if (line.length > maxCols) maxCols = line.length;
       }
 
-      // Sniff report date if not already found
+      // 2. Sniff report date if not found in filename
       if (!reportDate) {
-        const fullPageStr = lines.slice(0, 10).join(" ");
-        const dateMatch = fullPageStr.match(/\b\d{2}[-/]\d{2}[-/]\d{4}\b/);
-        if (dateMatch) {
-          reportDate = dateMatch[0];
+        const fullPageStr = lines.slice(0, 50).join(" ");
+        const specificMatch = fullPageStr.match(/(?:for|date\s*:?)\s*(\d{2}[-/]\d{2}[-/]\d{4})/i);
+        if (specificMatch) {
+          reportDate = specificMatch[1].replace(/\//g, "-");
+        } else {
+          const generalMatch = fullPageStr.match(/\b\d{2}[-/]\d{2}[-/]\d{4}\b/);
+          if (generalMatch) {
+            reportDate = generalMatch[0].replace(/\//g, "-");
+          }
         }
       }
 
@@ -378,16 +442,15 @@ class LongbookMergerApp {
     this.showToast("Cleared all reports.");
   }
 
-  sortByDate() {
+  sortByDate(silent = false) {
     if (this.files.length <= 1) return;
 
     this.files.sort((a, b) => {
       const parseDate = (dStr) => {
         if (!dStr || dStr === "N/A") return 0;
-        const parts = dStr.split(/[-/]/);
-        if (parts.length === 3) {
-          // DD-MM-YYYY to timestamp
-          return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`).getTime() || 0;
+        const match = dStr.match(/(\d{2})[-/](\d{2})[-/](\d{4})/);
+        if (match) {
+          return parseInt(match[3], 10) * 10000 + parseInt(match[2], 10) * 100 + parseInt(match[1], 10);
         }
         return 0;
       };
@@ -396,7 +459,9 @@ class LongbookMergerApp {
 
     this.renderQueue();
     this.updatePreview();
-    this.showToast("Reports sorted chronologically by date.");
+    if (!silent) {
+      this.showToast("Reports sorted chronologically by date.");
+    }
   }
 
   changePreviewPage(delta) {
@@ -486,16 +551,21 @@ class LongbookMergerApp {
       pdfDoc.setAuthor("PNB LongBookMerger");
       pdfDoc.setSubject("A4 Landscape Banking Print Reports");
 
-      // 1. Table of Contents / Index Page
+      // 1. Table of Contents / Index Pages calculation
+      const ENTRIES_PER_INDEX_PAGE = 32;
+      const indexPageCount = this.optGenerateIndex
+        ? Math.max(1, Math.ceil(this.files.length / ENTRIES_PER_INDEX_PAGE))
+        : 0;
+
       let currentPdfPageNumber = 1;
       const reportIndexEntries = [];
 
       // Calculate page counts and destinations
-      let projectedPage = this.optGenerateIndex ? 2 : 1;
+      let projectedPage = indexPageCount + 1;
       for (const rep of this.files) {
         const pages = this.getActivePages(rep);
         const startPage = projectedPage;
-        const endPage = projectedPage + pages.length - 1;
+        const endPage = pages.length > 0 ? projectedPage + pages.length - 1 : projectedPage;
         reportIndexEntries.push({
           fileName: rep.fileName,
           date: rep.reportDate,
@@ -506,65 +576,107 @@ class LongbookMergerApp {
         projectedPage += pages.length;
       }
 
+      // Draw Index Pages
       if (this.optGenerateIndex) {
-        const indexPage = pdfDoc.addPage([A4_WIDTH, A4_HEIGHT]);
-        currentPdfPageNumber++;
+        for (let ip = 0; ip < indexPageCount; ip++) {
+          const indexPage = pdfDoc.addPage([A4_WIDTH, A4_HEIGHT]);
+          currentPdfPageNumber++;
 
-        // Draw Header
-        indexPage.drawText("PUNJAB NATIONAL BANK — MERGED LONG BOOK INDEX", {
-          x: MARGIN_LEFT,
-          y: A4_HEIGHT - MARGIN_TOP - 20,
-          size: 13,
-          font: fontCourierBold,
-          color: PDFLib.rgb(0.08, 0.15, 0.4),
-        });
+          // Draw Header
+          const indexTitle =
+            indexPageCount > 1
+              ? `PUNJAB NATIONAL BANK — MERGED LONG BOOK INDEX (Page ${ip + 1} of ${indexPageCount})`
+              : "PUNJAB NATIONAL BANK — MERGED LONG BOOK INDEX";
 
-        const dateStr = new Date().toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        });
-        indexPage.drawText(`Generated on: ${dateStr}  |  Total Reports: ${this.files.length}  |  Format: A4 Landscape (Print-Ready)`, {
-          x: MARGIN_LEFT,
-          y: A4_HEIGHT - MARGIN_TOP - 36,
-          size: 9,
-          font: fontCourier,
-          color: PDFLib.rgb(0.3, 0.3, 0.3),
-        });
+          indexPage.drawText(indexTitle, {
+            x: MARGIN_LEFT,
+            y: A4_HEIGHT - MARGIN_TOP - 20,
+            size: 13,
+            font: fontCourierBold,
+            color: PDFLib.rgb(0.08, 0.15, 0.4),
+          });
 
-        // Horizontal line
-        indexPage.drawLine({
-          start: { x: MARGIN_LEFT, y: A4_HEIGHT - MARGIN_TOP - 44 },
-          end: { x: A4_WIDTH - MARGIN_RIGHT, y: A4_HEIGHT - MARGIN_TOP - 44 },
-          thickness: 1,
-          color: PDFLib.rgb(0.7, 0.7, 0.7),
-        });
+          const dateStr = new Date().toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          });
+          indexPage.drawText(
+            `Generated on: ${dateStr}  |  Total Reports: ${this.files.length}  |  Format: A4 Landscape (Print-Ready)`,
+            {
+              x: MARGIN_LEFT,
+              y: A4_HEIGHT - MARGIN_TOP - 36,
+              size: 9,
+              font: fontCourier,
+              color: PDFLib.rgb(0.3, 0.3, 0.3),
+            }
+          );
 
-        // Table Header
-        let tableY = A4_HEIGHT - MARGIN_TOP - 64;
-        indexPage.drawText("Sr.No.", { x: MARGIN_LEFT, y: tableY, size: 9, font: fontCourierBold });
-        indexPage.drawText("Report File Name", { x: MARGIN_LEFT + 45, y: tableY, size: 9, font: fontCourierBold });
-        indexPage.drawText("Report Date", { x: MARGIN_LEFT + 460, y: tableY, size: 9, font: fontCourierBold });
-        indexPage.drawText("Pages", { x: MARGIN_LEFT + 590, y: tableY, size: 9, font: fontCourierBold });
-        indexPage.drawText("PDF Page Range", { x: MARGIN_LEFT + 670, y: tableY, size: 9, font: fontCourierBold });
+          // Horizontal line
+          indexPage.drawLine({
+            start: { x: MARGIN_LEFT, y: A4_HEIGHT - MARGIN_TOP - 44 },
+            end: { x: A4_WIDTH - MARGIN_RIGHT, y: A4_HEIGHT - MARGIN_TOP - 44 },
+            thickness: 1,
+            color: PDFLib.rgb(0.7, 0.7, 0.7),
+          });
 
-        tableY -= 14;
-        indexPage.drawLine({
-          start: { x: MARGIN_LEFT, y: tableY + 8 },
-          end: { x: A4_WIDTH - MARGIN_RIGHT, y: tableY + 8 },
-          thickness: 0.5,
-          color: PDFLib.rgb(0.8, 0.8, 0.8),
-        });
+          // Table Header
+          let tableY = A4_HEIGHT - MARGIN_TOP - 64;
+          indexPage.drawText("Sr.No.", { x: MARGIN_LEFT, y: tableY, size: 9, font: fontCourierBold });
+          indexPage.drawText("Report File Name", { x: MARGIN_LEFT + 45, y: tableY, size: 9, font: fontCourierBold });
+          indexPage.drawText("Report Date", { x: MARGIN_LEFT + 460, y: tableY, size: 9, font: fontCourierBold });
+          indexPage.drawText("Pages", { x: MARGIN_LEFT + 590, y: tableY, size: 9, font: fontCourierBold });
+          indexPage.drawText("PDF Page Range", { x: MARGIN_LEFT + 670, y: tableY, size: 9, font: fontCourierBold });
 
-        // Table Rows
-        reportIndexEntries.forEach((entry, idx) => {
           tableY -= 14;
-          indexPage.drawText(String(idx + 1).padStart(2, "0"), { x: MARGIN_LEFT, y: tableY, size: 8.5, font: fontCourier });
-          indexPage.drawText(entry.fileName.substring(0, 55), { x: MARGIN_LEFT + 45, y: tableY, size: 8.5, font: fontCourier });
-          indexPage.drawText(entry.date, { x: MARGIN_LEFT + 460, y: tableY, size: 8.5, font: fontCourier });
-          indexPage.drawText(String(entry.pageCount), { x: MARGIN_LEFT + 590, y: tableY, size: 8.5, font: fontCourier });
-          indexPage.drawText(`Page ${entry.startPage} - ${entry.endPage}`, { x: MARGIN_LEFT + 670, y: tableY, size: 8.5, font: fontCourierBold });
-        });
+          indexPage.drawLine({
+            start: { x: MARGIN_LEFT, y: tableY + 8 },
+            end: { x: A4_WIDTH - MARGIN_RIGHT, y: tableY + 8 },
+            thickness: 0.5,
+            color: PDFLib.rgb(0.8, 0.8, 0.8),
+          });
+
+          // Table Rows for current index page slice
+          const pageEntries = reportIndexEntries.slice(
+            ip * ENTRIES_PER_INDEX_PAGE,
+            (ip + 1) * ENTRIES_PER_INDEX_PAGE
+          );
+
+          pageEntries.forEach((entry, idx) => {
+            const globalIdx = ip * ENTRIES_PER_INDEX_PAGE + idx;
+            tableY -= 14;
+            indexPage.drawText(String(globalIdx + 1).padStart(2, "0"), {
+              x: MARGIN_LEFT,
+              y: tableY,
+              size: 8.5,
+              font: fontCourier,
+            });
+            indexPage.drawText(entry.fileName.substring(0, 55), {
+              x: MARGIN_LEFT + 45,
+              y: tableY,
+              size: 8.5,
+              font: fontCourier,
+            });
+            indexPage.drawText(entry.date, {
+              x: MARGIN_LEFT + 460,
+              y: tableY,
+              size: 8.5,
+              font: fontCourier,
+            });
+            indexPage.drawText(String(entry.pageCount), {
+              x: MARGIN_LEFT + 590,
+              y: tableY,
+              size: 8.5,
+              font: fontCourier,
+            });
+            indexPage.drawText(`Page ${entry.startPage} - ${entry.endPage}`, {
+              x: MARGIN_LEFT + 670,
+              y: tableY,
+              size: 8.5,
+              font: fontCourierBold,
+            });
+          });
+        }
       }
 
       // 2. Render each report page
@@ -586,7 +698,10 @@ class LongbookMergerApp {
           for (const line of page.lines) {
             if (lineY < MARGIN_BOTTOM) break; // Safeguard against vertical overflow
 
-            pdfPage.drawText(line, {
+            // Sanitize non-WinAnsi characters to prevent pdf-lib crash
+            const safeLine = line.replace(/[^\x20-\x7E]/g, " ");
+
+            pdfPage.drawText(safeLine, {
               x: MARGIN_LEFT,
               y: lineY,
               size: fontSize,

@@ -9,8 +9,9 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- PDF-Lib & PapaParse -->
+  <!-- PDF-Lib, JSZip & PapaParse -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
   <!-- Custom Styles (Pure CSS, 100% Self-Contained) -->
@@ -42,7 +43,7 @@
         <i data-lucide="plus" style="width:16px; height:16px;"></i>
         <span>Add Reports</span>
       </label>
-      <input type="file" id="file-input" multiple accept=".txt,.prn,.csv,.htm,.html,.rpt" style="display:none;" />
+      <input type="file" id="file-input" multiple accept=".txt,.prn,.csv,.htm,.html,.rpt,.zip,application/zip,application/x-zip-compressed" style="display:none;" />
 
       <button id="btn-merge-download" class="btn-merge-download">
         <i data-lucide="file-down" style="width:16px; height:16px;"></i>
@@ -60,7 +61,7 @@
       </div>
 
       <h2 class="drop-title">Drag &amp; Drop Long Book Reports Here</h2>
-      <p class="drop-desc">Supports CBSL CSV, Finacle HTML (.htm/.html), and TXT/PRN/RPT files</p>
+      <p class="drop-desc">Supports ZIP archives (.zip), CBSL CSV, Finacle HTML (.htm/.html), and TXT/PRN/RPT files</p>
 
       <div class="privacy-notice">
         <i data-lucide="shield-check" style="width:14px; height:14px;"></i>
